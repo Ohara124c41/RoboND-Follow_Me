@@ -78,14 +78,20 @@ In the following cells, you will build an FCN to train a model to detect and loc
 * Create a `decoder_block`
 * Build the FCN consisting of encoder block(s), a 1x1 convolution, and decoder block(s).  This step requires experimentation with different numbers of layers and filter sizes to build your model.
 #
-##### The encoders in this project utilize "separable convolution" and "batch normalization." By having separable convolution (additional layers) allow for the number of hyperparameters to be reduced at an added cost of "depth." Batch normalization allows for the minimization of the batch by adjusting for the "mean" value. This is a very common technique for neural networks in order to improve training rates and network training speed.
+##### The encoders in this project utilize "separable convolution" and "batch normalization." By having separable convolution (additional layers) allow for the number of hyperparameters to be reduced at an added cost of "depth." Batch normalization allows for the minimization of the batch by adjusting for the "mean" value. This is a very common technique for neural networks in order to improve training rates and network training speed. Encoders create a set of feature maps from a filter bank by using convolutions. After batch normalization, an ReLU is applied with max pooling to acheive translation invarience. Since the boundary data must be stored, there can be issues if convolutions are called in an incorrect order. One thing to note is, by storing this data (memory) the overall accuracy decreases and the cost of the system increases. 
 #
-##### Decoder blocks have a different tasks. The selection for this project is to include an upsampler (bilinear) layer and a concatenation step.  The upsampler takes a "weighted average" of pixel data from the adjacent pixels to return a more useful value (average). The concatination layer chains the upsample and large input layers together. Finally, the output layer performs another separable convolution to retain the spatial information.
+##### Decoder blocks have a different tasks. The selection for this project is to include an upsampler (bilinear) layer and a concatenation step.  The upsampler takes a "weighted average" of pixel data from the adjacent pixels to return a more useful value (average). The concatination layer chains the upsample and large input layers together. Finally, the output layer performs another separable convolution to retain the spatial information. The bilinear upsampler does interpolation in one direction and then in another (similar to a forward/backward propagation). This allows for a relatively realistic image to be produced, since the information is represented. Also, with respect to data, some information is technically "lost" since it is a weighted average. This can be problematic if there is an application (military, noise) in which the entire dataset (analog for instance) needs to be preserved.
 #
-##### 1x1 convolutions are useful for the reduction of dimensionality while retaining data. Essentially, the 1x1 convolution layer behaves as a linear coordinate-dependent transformation in the filter space. It should be noted that its usage is a funtion of kernel size and results in less over-fitting (especially when using stochastic gradient descent)
+##### 1x1 convolutions are useful for the reduction of dimensionality while retaining data. Essentially, the 1x1 convolution layer behaves as a linear coordinate-dependent transformation in the filter space. It should be noted that its usage is a funtion of kernel size and results in less over-fitting (especially when using stochastic gradient descent). 1x1 convolutions, while mathematically equivalent to Fully Connected Layers (FCL), are more flexible. FCLs require a fixed size, where as the 1x1 can accept various values. 1x1 convolutions help increase model accuracy while allowing new parameters and non-linearity. Since the FCL will contrain the network to its specifications, using a 1x1 is more beneficial for dimensionality reduction. 
+#
+##### Skip connections work to improve the gradient flow through the network. This effectively increases the capacity without increasing the number of parameters. Skip connections are not often used in networks that are smaller than ten layers, due to the benefits appearing from traversing the gradient in many layers. This is similar to taking many samples (or integral slices in calculus) to gain very small gains over a large number of processes to result in a large summation of gains.
 #
 ###### http://iamaaditya.github.io/2016/03/one-by-one-convolution/
-
+###### https://datascience.stackexchange.com/questions/12830/how-are-1x1-convolutions-the-same-as-a-fully-connected-layer
+###### https://stackoverflow.com/questions/39366271/for-what-reason-convolution-1x1-is-used-in-deep-neural-networks
+###### https://stats.stackexchange.com/questions/194142/what-does-1x1-convolution-mean-in-a-neural-network
+###### 
+###### 
 ### Encoder Block
 ___
 
@@ -126,7 +132,7 @@ def decoder_block(small_ip_layer, large_ip_layer, filters):
 ### Model
 ___
 
-##### Now that that the encoder and decoder are blocks ready, the FCN can be built
+##### Now that that the encoder and decoder are blocks ready, the FCN can be built.
 #
 
 ##### There are three steps:
@@ -186,8 +192,22 @@ output_layer = fcn_model(inputs, num_classes)
 ___
 ##### Note: The hyperparameters were chosen based on previous instruction, intuition and ultimately trial-and-error. The training rate was chosen to be slightly below .5, as it resulted in a closer fit to the model. A relatively high number (40) of epochs was chosen, to have the training set propagated more times to attempt at convergence between the training and validation sets. Likewise, a higher amount of steps (based on the number of available images) resulted in better results, as to be expected. The changes did increase the computational time (which can be mitigated in the cloud). Since there was not time requirement (let's plan for this drone to not attempt computation in real-time), it was justifiable to allow a higher time allowance for a better score.
 #
+###### Learning Rate - How quickly the network learns how to identify the chosen object. A higher learning rate is faster to train, at a cost of being less accurate. A smaller learning rate is more accurate as the machine does not change its mind as quickly, at a nonlinear (maybe O(2^n)) increase in time below a certain value (approaching zero).
 #
-##### The definitions for the hyperparameters are:
+###### Number of Epochs - Number of propagations. Imagine washing your clothes 20 times to get them really clean. There is a point in which they wil not become more clean, and the ideal number (amout of times) can be arrived at by trial and error or knowing the impacts of the other hyperparameters on the overall network or system.
+#
+###### Steps per Epoch - the number of training images sent through each epoch. Imagine washing ten socks in a load of laundry. 
+#
+###### Validation Steps - Like the steps per epoch, except it is specifically for the validation set.
+#
+###### Workers - How many processes to work on the problem. More processes is better (AWS uses 4 for Large p2 clusters) but using only 2 might be more feasible on a personal computer (note: this will take a very long time depending on epoch number and learning rate, easily more than 24 hours below .5 learning rate and more than 20 epochs).
+#
+###### Batch Size - Example: if you have 1000 images and a batch size of 100, the algorithm will send 100 images through the training process at a time. Larger batch sizes process more data at a time, but at a higher computational cost trade-off to decreased amount of memory required.
+#
+###### https://stats.stackexchange.com/questions/153531/what-is-batch-size-in-neural-network
+###### https://www.quora.com/What-is-the-learning-rate-in-neural-networks
+#
+##### The Udacity definitions for the hyperparameters are:
 
 * **batch_size**: number of training samples/images that get propagated through the network in a single pass.
 * **num_epochs**: number of times the entire training dataset gets propagated through the network.
