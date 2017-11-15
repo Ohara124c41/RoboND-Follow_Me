@@ -28,7 +28,7 @@ ___
 #
 ##### The image below shows the chosen network architecture for this application.
 #
-
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/00x.jpg?raw=true)
 #
 ## FCN Layers
 ___
