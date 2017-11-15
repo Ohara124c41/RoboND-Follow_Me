@@ -237,6 +237,8 @@ model.fit_generator(train_iter,
                     workers = workers)
 ```
 
+##### The images below show the comparisions between the epoch(3) and epoch(40). It can be seen that these hyperparameters allow a relatively close following of the curves for the training and validation sets, with respect to the error loss.
+#
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/000.png?raw=true?raw=true)
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/002.png?raw=true?raw=true)
 
@@ -287,6 +289,10 @@ for i in range(3):
     plotting_tools.show_images(im_tuple)
 ```
 #
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/003.png?raw=true?raw=true)
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/004.png?raw=true?raw=true)
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/005.png?raw=true?raw=true)
+#
 ##### Images while at patrol without target
 #
 ```
@@ -296,6 +302,10 @@ for i in range(3):
     plotting_tools.show_images(im_tuple)
 ```
 #
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/006.png?raw=true?raw=true)
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/007.png?raw=true?raw=true)
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/008.png?raw=true?raw=true)
+#
 ##### Images while at patrol with target
 #
 ```
@@ -304,6 +314,10 @@ for i in range(3):
     im_tuple = plotting_tools.load_images(im_files[i])
     plotting_tools.show_images(im_tuple)
 ```
+#
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/009.png?raw=true?raw=true)
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/010.png?raw=true?raw=true)
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/011.png?raw=true?raw=true)
 #
 ## Evaluation
 #
