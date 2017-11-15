@@ -237,22 +237,12 @@ model.fit_generator(train_iter,
                     workers = workers)
 ```
 
-```
-Epoch 1/40
-199/200 [============================>.] - ETA: 17s - loss: 0.1939
-```
-
-```
-200/200 [==============================] - 3670s - loss: 0.1931 - val_loss: 0.0966
-Epoch 2/40
-199/200 [============================>.] - ETA: 17s - loss: 0.0361
-
-```
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/000.png?raw=true?raw=true)
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/002.png?raw=true?raw=true)
 
 
 
 
-200/200 [==============================] - 3635s - loss: 0.0131 - val_loss: 0.0218
 
 #
 ## Prediction
