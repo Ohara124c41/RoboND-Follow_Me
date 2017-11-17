@@ -47,7 +47,7 @@ Below are some useful definitions for functions used in different layers that co
   - ###### https://stats.stackexchange.com/questions/194142/what-does-1x1-convolution-mean-in-a-neural-network
 
 
-### building the Model
+### Building the Model
 ___
 
 There are three steps to building the model:
@@ -90,7 +90,7 @@ Hyperparameters must be defined and implemented to train the network.
 
 Note: The hyperparameters were chosen based on previous instruction, intuition and ultimately trial-and-error. The training rate was chosen to be slightly below .5, as it resulted in a closer fit to the model. A relatively high number (40) of epochs was chosen, to have the training set propagated more times to attempt at convergence between the training and validation sets. Likewise, a higher amount of steps (based on the number of available images) resulted in better results, as to be expected. The changes did increase the computational time (which can be mitigated in the cloud). Since there was not time requirement (let's plan for this drone to not attempt computation in real-time), it was justifiable to allow a higher time allowance for a better score.
 
-* **Learning Rate** - Usually understood as how quickly the network learns how to identify the chosen object, though this depends on overfitting and underfitting. A higher learning rate is faster to train, at a cost of being less accurate. A smaller learning rate is more accurate as the machine does not change its mind as quickly, at a nonlinear (maybe O(2^n)) increase in time below a certain value (approaching zero). A good learning rate will have a nice, smooth negative exponential `(e^-t)` characteristic when graphed. 
+* **Learning Rate** - Usually understood as how quickly the network learns how to identify the chosen object, though this depends on overfitting and underfitting. A higher learning rate is faster to train, at a cost of being less accurate. A smaller learning rate is more accurate as the machine does not change its mind as quickly, at a nonlinear (maybe O(2^n)) increase in time below a certain value (approaching zero). A good learning rate will have a nice, smooth negative exponential `(e^-t)` characteristic when graphed.
 
 * **Number of Epochs** - Number of propagations. Imagine washing your clothes 20 times to get them really clean. There is a point in which they will not become more clean, and the ideal number (amount of times) can be arrived at by trial and error or knowing the impacts of the other hyperparameters on the overall network or system.
 
@@ -151,7 +151,7 @@ Compare the predictions, and compare them to the ground truth labels and origina
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/003.png?raw=true?raw=true)
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/004.png?raw=true?raw=true)
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/005.png?raw=true?raw=true)
-#### Scores for while the quad is following behind the target.
+#### Scores for while the quad is following behind the target:
 
 ```
 number of validation samples intersection over the union evaulated on 542
@@ -162,13 +162,13 @@ number true positives: 539, number false positives: 0, number false negatives: 0
 ```
 
 
-#### Images while at patrol without target
+#### Images while at patrol without target:
 
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/006.png?raw=true?raw=true)
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/007.png?raw=true?raw=true)
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/008.png?raw=true?raw=true)
 
-##### Scores for images while the quad is on patrol and the target is not visible
+##### Scores for images while the quad is on patrol and the target is not visible:
 ```
 number of validation samples intersection over the union evaulated on 270
 average intersection over union for background is 0.9901814911147127
@@ -176,12 +176,12 @@ average intersection over union for other people is 0.8145893794238864
 average intersection over union for the hero is 0.0
 number true positives: 0, number false positives: 36, number false negatives: 0
 ```
-##### Images while at patrol with target
+##### Images while at patrol with target:
 
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/009.png?raw=true?raw=true)
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/010.png?raw=true?raw=true)
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/011.png?raw=true?raw=true)
-#### This score measures how well the neural network can detect the target from far away
+##### This score measures how well the neural network can detect the target from far away:
 
 ```
 number of validation samples intersection over the union evaluated on 322
@@ -193,7 +193,7 @@ number true positives: 197, number false positives: 3, number false negatives: 1
 ## Evaluation
 
 Now, we can calculate the score based on the true/false positives and negatives
-###### Sum all the true positives, etc. from the three datasets to get a weight for the score
+###### Sum all the true positives, etc. from the three datasets to get a weight for the score:
 ```
 true_pos = true_pos1 + true_pos2 + true_pos3
 false_pos = false_pos1 + false_pos2 + false_pos3
