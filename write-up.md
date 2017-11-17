@@ -47,7 +47,7 @@ Below are some useful definitions for functions used in different layers that co
   - ###### https://stats.stackexchange.com/questions/194142/what-does-1x1-convolution-mean-in-a-neural-network
 
 
-### Building the Model
+## Building the Model
 ___
 
 There are three steps to building the model:
@@ -84,7 +84,7 @@ def fcn_model(inputs, num_classes):
 
 
 
-### Hyperparameters
+## Hyperparameters
 ___
 Hyperparameters must be defined and implemented to train the network.
 
