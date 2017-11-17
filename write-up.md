@@ -34,7 +34,7 @@ Below are some useful definitions for functions used in different layers that co
 
 * The **encoders** in this project utilize `separable convolution` and `batch normalization.` By having separable convolution (additional layers) allow for the number of hyperparameters to be reduced at an added cost of "depth." Batch normalization allows for the minimization of the batch by adjusting for the "mean" value. This is a very common technique for neural networks in order to improve training rates and network training speed. Encoders create a set of feature maps from a filter bank by using convolutions. After batch normalization, an `ReLU` is applied with max pooling to achieve translation invariance. Since the boundary data must be stored, there can be issues if convolutions are called in an incorrect order. One thing to note is, by storing this data (memory) the overall accuracy decreases and the cost of the system increases. Encoders project the input to the hidden layer. The hidden layer then learns a set of latent factors or features. In short, encoders map input data to a different compressed feature representation, which is beneficial for images since they use (relatively) a lot of memory. This is advantageous since compression saves memory, but again, features can be lost during data reduction.
 
-* **Decoder blocks** have a different tasks. The selection for this project is to include an `upsampler (bilinear)` layer and a concatenation step. The upsampler takes a "weighted average" of pixel data from the adjacent pixels to return a more useful value (average). The concatenation layer chains the upsample and large input layers together. Finally, the output layer performs another separable convolution to retain the spatial information. The bilinear upsampler does interpolation in one direction and then in another (similar to a forward/backward propagation). This allows for a relatively realistic image to be produced, since the information is represented. Also, with respect to data, some information is technically "lost" since it is a weighted average. This can be problematic if there is an application (military, noise) in which the entire dataset (analog for instance) needs to be preserved. Decoders re-project the hidden layer to the output, in order to reconstruct the input back into the input space (e.g. image compression and decompression to reform the image). Note: Upsampling by a factor of 2 is generally recommended, but different factors can be used as well. Upsampling is used in the decoder block of the FCN. Note: A layer concatenation step is similar to skip connections. Note: Separable convolution layers (1 or 2 additional) are used to extract some more spatial information from prior layers.
+* **Decoder blocks** have a different tasks. The selection for this project is to include an `upsampler (bilinear)` layer and a `concatenation step`. The upsampler takes a "weighted average" of pixel data from the adjacent pixels to return a more useful value (average). The concatenation layer chains the upsample and large input layers together. Finally, the output layer performs another separable convolution to retain the spatial information. The bilinear upsampler does interpolation in one direction and then in another (similar to a forward/backward propagation). This allows for a relatively realistic image to be produced, since the information is represented. Also, with respect to data, some information is technically "lost" since it is a weighted average. This can be problematic if there is an application (military, noise) in which the entire dataset (analog for instance) needs to be preserved. Decoders re-project the hidden layer to the output, in order to reconstruct the input back into the input space (e.g. image compression and decompression to reform the image). Note: Upsampling by a factor of 2 is generally recommended, but different factors can be used as well. Upsampling is used in the decoder block of the FCN. Note: A layer concatenation step is similar to skip connections. Note: Separable convolution layers (1 or 2 additional) are used to extract some more spatial information from prior layers.
 
 
 * **1x1 convolutions** are useful for the reduction of dimensionality while retaining data. Essentially, the 1x1 convolution layer behaves as a linear coordinate-dependent transformation in the filter space. It should be noted that its usage is a function of kernel size and results in less over-fitting (especially when using stochastic gradient descent). 1x1 convolutions, while mathematically equivalent to `Fully Connected Layers (FCL)`, are more flexible. FCLs require a fixed size, where as the 1x1 can accept various values. 1x1 convolutions help increase model accuracy while allowing new parameters and non-linearity. Since the FCL will constrain the network to its specifications, using a 1x1 is more beneficial for dimensionality reduction. The 1x1 convolution condenses all of the input pixels into one pixel. For example, if there are initially 256 channels (color pixels) for input, 64 1x1 convolutions will collapse these pixels into a single output pixel, effectively mapping the inputs to the outputs. In the case mentioned here, using 1x1 convolutions is nearly 4x faster than working with 256 inputs to 256 outputs. Instead of taking the product of all of the inputs, the 1x1 convolution allows for the neural network to specify which inputs (colors) to select. These lower dimensional embeddings retain a large portion of information and also include an ReLU. In practice, 1x1 convolutions are essentially (1x1xnumber_of_channels) with zero padding and a stride of one. 1x1s are the similar to a FCL based on the total number of parameters.  Basically, this is very advantageous for computational speed at the cost of potentially losing some important features (a very specific color, an interested section of noise, etc.).
@@ -90,11 +90,11 @@ Hyperparameters must be defined and implemented to train the network.
 
 Note: The hyperparameters were chosen based on previous instruction, intuition and ultimately trial-and-error. The training rate was chosen to be slightly below .5, as it resulted in a closer fit to the model. A relatively high number (40) of epochs was chosen, to have the training set propagated more times to attempt at convergence between the training and validation sets. Likewise, a higher amount of steps (based on the number of available images) resulted in better results, as to be expected. The changes did increase the computational time (which can be mitigated in the cloud). Since there was not time requirement (let's plan for this drone to not attempt computation in real-time), it was justifiable to allow a higher time allowance for a better score.
 
-* **Learning Rate** - Usually understood as how quickly the network learns how to identify the chosen object, though this depends on overfitting and underfitting. A higher learning rate is faster to train, at a cost of being less accurate. A smaller learning rate is more accurate as the machine does not change its mind as quickly, at a nonlinear (maybe O(2^n)) increase in time below a certain value (approaching zero). A good learning rate will have a nice, smooth negative exponential `(e^-t)` characteristic when graphed.
+* **Learning Rate** - Usually understood as how quickly the network learns how to identify the chosen object, though this depends on overfitting and underfitting. A good learning rate is a higher value than the low learning rate. Yet it is more accurate (credit: Udacity mentor and image below) A lower learning rate is more accurate as the machine does not change its mind as quickly, at a nonlinear (maybe O(2^n)) increase in time below a certain value (approaching zero). A good learning rate will have a nice, smooth negative exponential `(e^-t)` characteristic when graphed.
 
 * **Number of Epochs** - Number of propagations. Imagine washing your clothes 20 times to get them really clean. There is a point in which they will not become more clean, and the ideal number (amount of times) can be arrived at by trial and error or knowing the impacts of the other hyperparameters on the overall network or system.
 
-* **Steps per Epoch** - the number of training images sent through each epoch. Imagine washing ten socks in a load of laundry. From the Keras documentation: "Total number of steps (batches of samples) to yield from generator before declaring one epoch finished and starting the next epoch. It should typically be equal to the number of unique samples of your dataset divided by the batch size."
+* **Steps per Epoch** - The number of batches sent through in each epoch. The total number of training images sent through each epoch = (num of batches) * (num of steps) (Credit: Udacity mentor). Imagine washing ten socks in a load of laundry. From the Keras documentation: "Total number of steps (batches of samples) to yield from generator before declaring one epoch finished and starting the next epoch. It should typically be equal to the number of unique samples of your dataset divided by the batch size."
 
 * **Validation Steps** - Like the steps per epoch, except it is specifically for the validation set.
 
@@ -106,16 +106,11 @@ Note: The hyperparameters were chosen based on previous instruction, intuition a
   * ###### https://stats.stackexchange.com/questions/153531/what-is-batch-size-in-neural-network
   * ###### https://www.quora.com/What-is-the-learning-rate-in-neural-networks
 
----
-The Udacity definitions for the hyperparameters are:
 
-* **batch_size**: number of training samples/images that get propagated through the network in a single pass.
-* **num_epochs**: number of times the entire training dataset gets propagated through the network.
-* **steps_per_epoch**: number of batches of training images that go through the network in 1 epoch. We have provided you with a default value. One recommended value to try would be based on the total number of images in training dataset divided by the batch_size.
-* **validation_steps**: number of batches of validation images that go through the network in 1 epoch. This is similar to steps_per_epoch, except validation_steps is for the validation dataset. We have provided you with a default value for this as well.
-* **workers**: maximum number of processes to spin up. This can affect your training speed and is dependent on your hardware. We have provided a recommended value to work with.
+#### Image for Learning rates:
 
-The final hyperparameter selections are:
+![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/learningrates.jpeg?raw=true)
+#### The final hyperparameter selections are:
 
 ```
 learning_rate = 0.004
@@ -126,6 +121,15 @@ validation_steps = 50
 workers = 4
 ```
 
+##### Hyperparameter Testing
+
+Initially, the standard 0.01 value for the learning rate was used. However, this resulted in large spikes (similar to the impulses from a Dirac function) in the negative exponential curve. Next, a .005 learning rate was implemented, and while having more appealing characteristics, still resulted in spikes in the curve. Following this, 0.004 was used and the training curve and validation curve quickly began to converge (noticeable after only 4 epochs). Finally, 0.003 was attempted, but would have resulted in more than 48 hours (locally, 12 hours in the cloud) to train the network, which was deemed unrealistic and impractical.
+
+The batch size was chosen relative to the processing power and memory allocation available. A higher batch size (usually 2^n power, but actually not required) would have a better performance, at the risk of full memory utilization.
+
+40 epochs were chosen initially, due to familiarity with another project. After analyzing the performance with the other hyperparameters (specifically the training rate), it appeared the training results (final score) would be just as good at 20 epochs instead, but this was not true with respect to the differences in training and validation loss. In a decision to maintain a high final score, 40 epochs proved to have a lower loss factor and this value was chosen.
+
+The validation steps and steps per epoch are usually determined based on total number of batches (images). The more images in the dataset results in a higher number of steps.
 
 The images below show the comparisons between the epoch(3) and epoch(40). It can be seen that these hyperparameters allow a relatively close following of the curves for the training and validation sets, with respect to the error loss.
 
@@ -176,7 +180,7 @@ average intersection over union for other people is 0.8145893794238864
 average intersection over union for the hero is 0.0
 number true positives: 0, number false positives: 36, number false negatives: 0
 ```
-##### Images while at patrol with target:
+##### Images while at patrol with target at a distance:
 
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/009.png?raw=true?raw=true)
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/010.png?raw=true?raw=true)
