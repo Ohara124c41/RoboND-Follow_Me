@@ -57,7 +57,7 @@ There are three steps to building the model:
 * Add decoder blocks for the decoder layers.
 
 An example is given in python, since is readable and demonstrates a written version of the network architecture:
-```
+```python
 def fcn_model(inputs, num_classes):
 
     # Add Encoder Blocks.
@@ -112,7 +112,7 @@ Note: The hyperparameters were chosen based on previous instruction, intuition a
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/learningrates.jpeg?raw=true)
 #### The final hyperparameter selections are:
 
-```
+```python
 learning_rate = 0.004
 batch_size = 32
 num_epochs = 40
@@ -157,7 +157,7 @@ Compare the predictions, and compare them to the ground truth labels and origina
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/005.png?raw=true?raw=true)
 #### Scores for while the quad is following behind the target:
 
-```
+```python
 number of validation samples intersection over the union evaulated on 542
 average intersection over union for background is 0.9957179100643849
 average intersection over union for other people is 0.39279620415847066
@@ -173,7 +173,7 @@ number true positives: 539, number false positives: 0, number false negatives: 0
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/008.png?raw=true?raw=true)
 
 ##### Scores for images while the quad is on patrol and the target is not visible:
-```
+```python
 number of validation samples intersection over the union evaulated on 270
 average intersection over union for background is 0.9901814911147127
 average intersection over union for other people is 0.8145893794238864
@@ -187,7 +187,7 @@ number true positives: 0, number false positives: 36, number false negatives: 0
 ![alt text](https://github.com/Ohara124c41/RoboND-Follow_Me/blob/master/images/011.png?raw=true?raw=true)
 ##### This score measures how well the neural network can detect the target from far away:
 
-```
+```python
 number of validation samples intersection over the union evaluated on 322
 average intersection over union for background is 0.9971254607964568
 average intersection over union for other people is 0.5102308567179387
@@ -198,7 +198,7 @@ number true positives: 197, number false positives: 3, number false negatives: 1
 
 Now, we can calculate the score based on the true/false positives and negatives
 ###### Sum all the true positives, etc. from the three datasets to get a weight for the score:
-```
+```python
 true_pos = true_pos1 + true_pos2 + true_pos3
 false_pos = false_pos1 + false_pos2 + false_pos3
 false_neg = false_neg1 + false_neg2 + false_neg3
@@ -207,12 +207,12 @@ weight = true_pos/(true_pos+false_neg+false_pos)
 = 0.8373151308304891
 ```
 ###### The IoU for the dataset that never includes the hero is excluded from grading:
-```
+```python
 final_IoU = (iou1 + iou3)/2
 = 0.667099642305
 ```
 ###### The final score is given by:
-```
+```python
 final_score = final_IoU * weight
 ```
 * ### **Final Score** = 0.558572624274
